@@ -8,4 +8,4 @@
  ## clone
  
    ```bash
-   git clone https://github.com/username/repo-name.git```
+   git clone https://github.com/alqsdeuss/lanyard-user-info/tree/main
