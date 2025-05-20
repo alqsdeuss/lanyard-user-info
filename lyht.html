@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>user info by lanyard</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+<style>
+  * {
+    margin: 0; padding: 0; box-sizing: border-box;
+    font-family: 'Fredoka One', sans-serif;
+  }
+  body {
+    background: #0d0d0d;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px;
+    min-height: 100vh;
+    position: relative;
+  }
+  .header {
+    font-size: 28px;
+    margin-bottom: 16px;
+    color: #b6fcd5;
+  }
+  .search {
+    background-color: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(0, 255, 128, 0.2);
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    width: 600px;
+    color: white;
+    font-size: 16px;
+    letter-spacing: 1px;
+  }
+  .input-container {
+    width: 600px;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+  }
+  .btn {
+    background-color: #00ff80;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    color: black;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.3s;
+    margin-left: 10px;
+  }
+  .btn:hover {
+    background-color: #00cc66;
+  }
+  .error {
+    color: #ff4c4c;
+    margin-top: 10px;
+    width: 600px;
+    text-align: center;
+    font-weight: bold;
+  }
+  .app-container {
+    background-color: rgba(0, 0, 0, 0.65);
+    border: 1px solid rgba(0, 255, 128, 0.2);
+    backdrop-filter: blur(12px);
+    width: 600px;
+    border-radius: 20px;
+    padding: 24px 30px;
+    box-shadow: 0 0 12px rgba(0, 255, 128, 0.1);
+    margin-bottom: 20px;
+  }
+  .app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .app-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .app-logo {
+    width: 80px;
+    height: 80px;
+    background-color: black;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: #00ff80;
+    box-shadow: 0 0 6px rgba(0,255,128,0.3);
+  }
+  .app-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .app-name {
+    font-size: 22px;
+    color: white;
+    font-weight: bold;
+  }
+  .app-sub {
+    font-size: 14px;
+    color: #b5bac1;
+    margin-top: 4px;
+  }
+  .status {
+    font-size: 14px;
+    color: #00ff80;
+    font-weight: 600;
+  }
+  .banner {
+    width: 600px;
+    height: 150px;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    box-shadow: 0 0 15px rgba(0, 255, 128, 0.5);
+  }
+  .banner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .expandable {
+    background-color: rgba(0, 255, 128, 0.05);
+    margin-top: 10px;
+    border-radius: 12px;
+    padding: 16px;
+    font-size: 14px;
+    color: #d1d1d1;
+    border: 1px solid rgba(0, 255, 128, 0.15);
+  }
+  .expandable a {
+    color: #00ff80;
+    text-decoration: none;
+  }
+  .expandable a:hover {
+    text-decoration: underline;
+  }
+  .section-title {
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 10px;
+    color: #00ff80;
+  }
+  .loading-spinner {
+    border: 4px solid rgba(0, 255, 128, 0.2);
+    border-top: 4px solid #00ff80;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    animation: spin 1s linear infinite;
+    margin-left: 15px;
+  }
+  @keyframes spin {
+    0% { transform: rotate(0deg);}
+    100% { transform: rotate(360deg);}
+  }
+  .footer-note {
+    position: fixed;
+    bottom: 15px;
+    font-size: 14px;
+    color: #888;
+    width: 100%;
+    text-align: center;
+    font-family: 'Fredoka One', sans-serif;
+    user-select: none;
+  }
+  a.discord-link {
+    color: #00ff80;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  a.discord-link:hover {
+    text-decoration: underline;
+  }
+</style>
+</head>
+<body>
+<div class="header">User Info By Lanyard</div>
+<div class="input-container">
+  <input type="text" id="discordId" class="search" placeholder="Enter Discord User ID" autocomplete="off" />
+  <button class="btn" id="btnShow">show</button>
+  <div id="loading" class="loading-spinner" style="display:none;"></div>
+</div>
+
+<div id="error" class="error"></div>
+<div id="userInfo"></div>
+<div class="footer-note">
+  u must join the discord server <a href="https://discord.gg/Wbvjq8za7V" target="_blank" rel="noopener noreferrer" class="discord-link">https://discord.gg/Wbvjq8za7V</a> to receive info
+</div>
+
+<script>
+  const btn = document.getElementById('btnShow');
+  const input = document.getElementById('discordId');
+  const errorDiv = document.getElementById('error');
+  const userInfoDiv = document.getElementById('userInfo');
+  const loadingSpinner = document.getElementById('loading');
+  btn.addEventListener('click', () => {
+    const id = input.value.trim();
+    errorDiv.textContent = '';
+    userInfoDiv.innerHTML = '';
+
+    if (!/^\d{17,19}$/.test(id)) {
+      errorDiv.textContent = 'pls enter a valid discord id';
+      return;
+    }
+
+    loadingSpinner.style.display = 'inline-block';
+    fetch(`https://api.lanyard.rest/v1/users/${id}`)
+      .then(res => res.json())
+      .then(data => {
+        loadingSpinner.style.display = 'none';
+        if (!data.success || !data.data || !data.data.discord_user) {
+          errorDiv.textContent = 'user not found';
+          return;
+        }
+
+        const user = data.data.discord_user;
+        const kv = data.data.kv || {};
+        const activities = data.data.activities || [];
+        const discordStatus = data.data.discord_status || 'offline';
+        const spotify = data.data.spotify;
+        const isAnimatedAvatar = user.avatar && user.avatar.startsWith('a_');
+        const avatarExt = isAnimatedAvatar ? 'gif' : 'png';
+        const avatarUrl = user.avatar 
+          ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${avatarExt}?size=128`
+          : 'https://cdn.discordapp.com/embed/avatars/0.png';
+        let bannerUrl = null;
+        if (user.banner) {
+          const isAnimatedBanner = user.banner.startsWith('a_');
+          const bannerExt = isAnimatedBanner ? 'gif' : 'png';
+          bannerUrl = `https://cdn.discordapp.com/banners/${user.id}/${user.banner}.${bannerExt}?size=600`;
+        }
+        const statusColors = {
+          online: '#00ff80',
+          idle: '#ffcc00',
+          dnd: '#ff3300',
+          offline: '#666666'
+        };
+        const statusColor = statusColors[discordStatus] || '#666666';
+        const displayName = user.display_name || user.username;
+        const discriminator = user.discriminator || '0000';
+        let activitiesHtml = '';
+        if (activities.length) {
+          activitiesHtml += `<div class="section-title">activities</div>`;
+          activities.forEach(act => {
+            if (act.name.toLowerCase() === 'spotify') return;
+            const actName = act.name || 'Unknown';
+            const actDetails = act.details || '';
+            const actState = act.state || '';
+            const largeImage = act.assets && act.assets.large_image ? parseAssetUrl(act.assets.large_image) : null;
+            const largeText = act.assets && act.assets.large_text ? act.assets.large_text : '';
+            const smallImage = act.assets && act.assets.small_image ? parseAssetUrl(act.assets.small_image) : null;
+            const smallText = act.assets && act.assets.small_text ? act.assets.small_text : '';
+
+            activitiesHtml += `
+              <div class="app-container">
+                <div class="app-header">
+                  <div class="app-info">
+                    <div class="app-logo">
+                      ${largeImage ? `<img src="${largeImage}" alt="${largeText}"/>` : `<i class="fa-solid fa-gamepad"></i>`}
+                    </div>
+                    <div>
+                      <div class="app-name">${escapeHtml(actName)}</div>
+                      <div class="app-sub">${escapeHtml(actDetails)}</div>
+                    </div>
+                  </div>
+                  <div class="status">${escapeHtml(actState)}</div>
+                </div>
+                ${smallImage ? `<div class="expandable" title="${escapeHtml(smallText)}"><img src="${smallImage}" alt="${smallText}" style="width: 48px; height: 48px; border-radius: 10px;"></div>` : ''}
+              </div>
+            `;
+          });
+        }
+
+        let spotifyHtml = '';
+        if (spotify && spotify.track_id) {
+          const albumCover = spotify.album_art_url;
+          const songName = spotify.song;
+          const artistName = spotify.artist;
+          const songUrl = `https://open.spotify.com/track/${spotify.track_id}`;
+          spotifyHtml = `
+            <div class="app-container">
+              <div class="app-header">
+                <div class="app-info">
+                  <div class="app-logo">
+                    <img src="${albumCover}" alt="spotify album cover" />
+                  </div>
+                  <div>
+                    <div class="app-name">Listening to Spotify</div>
+                    <div class="app-sub">${escapeHtml(songName)} — ${escapeHtml(artistName)}</div>
+                  </div>
+                </div>
+                <div class="status" style="color:#1DB954;">Spotify</div>
+              </div>
+            </div>
+          `;
+        }
+        
+        userInfoDiv.innerHTML = `
+          ${bannerUrl ? `<div class="banner"><img src="${bannerUrl}" alt="user banner"></div>` : ''}
+          <div class="app-container">
+            <div class="app-header">
+              <div class="app-info">
+                <div class="app-logo">
+                  <img src="${avatarUrl}" alt="Avatar of ${escapeHtml(user.username)}" />
+                </div>
+                <div>
+                  <div class="app-name">${escapeHtml(user.username)}#${escapeHtml(discriminator)}</div>
+                  <div class="app-sub">Status: <span style="color:${statusColor}; text-transform: capitalize;">${escapeHtml(discordStatus)}</span></div>
+                </div>
+              </div>
+              <div class="status" style="color:${statusColor}; text-transform: capitalize;">${escapeHtml(discordStatus)}</div>
+            </div>
+          </div>
+          ${activitiesHtml}
+          ${spotifyHtml}
+        `;
+
+      })
+      .catch(err => {
+        loadingSpinner.style.display = 'none';
+        errorDiv.textContent = 'failed to fetch data';
+        console.error(err);
+      });
+  });
+  function parseAssetUrl(asset) {
+    if (!asset) return null;
+    if (asset.startsWith('http') || asset.startsWith('https')) {
+      return asset;
+    }
+    if (asset.startsWith('spotify:')) {
+      return null;
+    }
+    if (asset.startsWith('mp:')) {
+      const id = asset.split(':')[1];
+      return `https://cdn.discordapp.com/app-assets/${id}.png`;
+    }
+    if (asset.includes(':')) {
+      const parts = asset.split(':');
+      asset = parts[1];
+    }
+    const isAnimated = asset.startsWith('a_');
+    const ext = isAnimated ? 'gif' : 'png';
+    return `https://cdn.discordapp.com/app-assets/${asset}.${ext}`;
+  }
+
+  function escapeHtml(text) {
+    if (!text) return '';
+    return text.replace(/&/g, "&amp;")
+               .replace(/</g, "&lt;")
+               .replace(/>/g, "&gt;")
+               .replace(/"/g, "&quot;")
+               .replace(/'/g, "&#039;");
+  }
+</script>
+</body>
+</html>
